@@ -1,26 +1,45 @@
-#pylint:disable=no-member
+# pylint:disable=no-member
 
 import cv2 as cv
 import numpy as np
 
-blank = np.zeros((400,400), dtype='uint8')
+blank = np.zeros((400, 400), dtype='uint8')
 
-rectangle = cv.rectangle(blank.copy(), (30,30), (370,370), 255, -1)
-circle = cv.circle(blank.copy(), (200,200), 200, 255, -1)
+# Create a heart shape manually
+heart = blank.copy()
 
-cv.imshow('Rectangle', rectangle)
+t = np.linspace(0, 2 * np.pi, 1000)
+
+x = 16 * np.sin(t) ** 3
+y = 13 * np.cos(t) - 5 * np.cos(2 * t) - 2 * np.cos(3 * t) - np.cos(4 * t)
+
+# Normalize and scale the heart to fit inside 400x400 image
+x = (x - x.min()) / (x.max() - x.min())
+y = (y - y.min()) / (y.max() - y.min())
+
+x = (x * 300 + 50).astype(np.int32)
+y = ((1 - y) * 280 + 60).astype(np.int32)
+
+points = np.column_stack((x, y))
+
+cv.fillPoly(heart, [points], 255)
+
+# Create a circle
+circle = cv.circle(blank.copy(), (200, 200), 200, 255, -1)
+
+cv.imshow('Heart', heart)
 cv.imshow('Circle', circle)
 
 # bitwise AND --> intersecting regions
-bitwise_and = cv.bitwise_and(rectangle, circle)
+bitwise_and = cv.bitwise_and(heart, circle)
 cv.imshow('Bitwise AND', bitwise_and)
 
-# bitwise OR --> non-intersecting and intersecting regions
-bitwise_or = cv.bitwise_or(rectangle, circle)
+# bitwise OR --> intersecting and non-intersecting regions
+bitwise_or = cv.bitwise_or(heart, circle)
 cv.imshow('Bitwise OR', bitwise_or)
 
-# bitwise XOR --> non-intersecting regions
-bitwise_xor = cv.bitwise_xor(rectangle, circle)
+# bitwise XOR --> non-intersecting regions only
+bitwise_xor = cv.bitwise_xor(heart, circle)
 cv.imshow('Bitwise XOR', bitwise_xor)
 
 # bitwise NOT
@@ -28,3 +47,4 @@ bitwise_not = cv.bitwise_not(circle)
 cv.imshow('Circle NOT', bitwise_not)
 
 cv.waitKey(0)
+cv.destroyAllWindows()

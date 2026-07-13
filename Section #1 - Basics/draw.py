@@ -23,7 +23,7 @@ cv.line(blank, (100,250), (300,400), (255,255,255), thickness=3)
 cv.imshow('Line', blank)
 
 # 5. Write text
-cv.putText(blank, 'Hello, my name is Jason!!!', (0,225), cv.FONT_HERSHEY_TRIPLEX, 1.0, (0,255,0), 2)
+cv.putText(blank, 'Hello, my name is Troy Budoy!!!', (0,225), cv.FONT_HERSHEY_TRIPLEX, 1.0, (255,255,255), 2)
 cv.imshow('Text', blank)
 
 cv.waitKey(0)

@@ -24,7 +24,7 @@ cv.imshow('Canny Edges', canny)
 contours, hierarchies = cv.findContours(canny, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
 print(f'{len(contours)} contour(s) found!')
 
-cv.drawContours(blank, contours, -1, (0,0,255), 1)
+cv.drawContours(blank, contours, -1, (0,79,72), 1)
 cv.imshow('Contours Drawn', blank)
 
 cv.waitKey(0)

@@ -20,7 +20,7 @@ def changeRes(width,height):
     capture.set(4,height)
     
 # Reading Videos
-capture = cv.VideoCapture('../Resources/Videos/dog.mp4')
+capture = cv.VideoCapture('../Resources/Videos/Haha.mp4')
 
 while True:
     isTrue, frame = capture.read()

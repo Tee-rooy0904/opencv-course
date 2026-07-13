@@ -3,8 +3,8 @@
 import cv2 as cv
 import numpy as np
 
-img = cv.imread('../Resources/Photos/park.jpg')
-cv.imshow('Park', img)
+img = cv.imread('../Resources/Photos/Woody 2.jpg')
+cv.imshow('Woody 2', img)
 
 blank = np.zeros(img.shape[:2], dtype='uint8')
 
