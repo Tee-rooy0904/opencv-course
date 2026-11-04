@@ -2,6 +2,7 @@
 
 import cv2 as cv
 import numpy as np
+from google.colab.patches import cv2_imshow
 
 blank = np.zeros((400, 400), dtype='uint8')
 
@@ -27,24 +28,28 @@ cv.fillPoly(heart, [points], 255)
 # Create a circle
 circle = cv.circle(blank.copy(), (200, 200), 200, 255, -1)
 
-cv.imshow('Heart', heart)
-cv.imshow('Circle', circle)
+print("Heart Shape:")
+cv2_imshow(heart)
+
+print("Circle Shape:")
+cv2_imshow(circle)
 
 # bitwise AND --> intersecting regions
 bitwise_and = cv.bitwise_and(heart, circle)
-cv.imshow('Bitwise AND', bitwise_and)
+print("Bitwise AND:")
+cv2_imshow(bitwise_and)
 
 # bitwise OR --> intersecting and non-intersecting regions
 bitwise_or = cv.bitwise_or(heart, circle)
-cv.imshow('Bitwise OR', bitwise_or)
+print("Bitwise OR:")
+cv2_imshow(bitwise_or)
 
 # bitwise XOR --> non-intersecting regions only
 bitwise_xor = cv.bitwise_xor(heart, circle)
-cv.imshow('Bitwise XOR', bitwise_xor)
+print("Bitwise XOR:")
+cv2_imshow(bitwise_xor)
 
 # bitwise NOT
 bitwise_not = cv.bitwise_not(circle)
-cv.imshow('Circle NOT', bitwise_not)
-
-cv.waitKey(0)
-cv.destroyAllWindows()
+print("Circle NOT:")
+cv2_imshow(bitwise_not)
