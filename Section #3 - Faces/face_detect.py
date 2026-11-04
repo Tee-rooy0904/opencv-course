@@ -1,22 +1,40 @@
 # pylint:disable=no-member
 
 import cv2 as cv
-from pathlib import Path
+import os
+from google.colab.patches import cv2_imshow
 
-BASE_DIR = Path(__file__).resolve().parent
+# Dynamic Search to find where 'haar_face.xml' is stored in your Google Drive
+def find_file(filename, search_path):
+    for root, dirs, files in os.walk(search_path):
+        if filename in files:
+            return os.path.join(root, filename)
+    return None
 
-img_path = BASE_DIR.parent / 'Resources' / 'Photos' / 'Woody.jpg'
-cascade_path = BASE_DIR / 'haar_face.xml'
+print("Searching for 'haar_face.xml' in Google Drive...")
+cascade_path = find_file('haar_face.xml', '/content/drive/MyDrive')
 
-img = cv.imread(str(img_path))
+if cascade_path is None:
+    # Fallback to downloading a verified Haar Cascade file from OpenCV's official repository
+    print("Could not find 'haar_face.xml' in your Drive. Downloading official Haar Cascade model...")
+    import urllib.request
+    cascade_path = '/content/haar_face_downloaded.xml'
+    url = 'https://raw.githubusercontent.com/opencv/opencv/master/data/haarcascades/haarcascade_frontalface_default.xml'
+    urllib.request.urlretrieve(url, cascade_path)
+else:
+    print(f"Found cascade file at: {cascade_path}")
+
+# Image path pointing to your Woody photo
+img_path = '/content/drive/MyDrive/IT QM/Resources/Photos/Woody.jpg'
+img = cv.imread(img_path)
 
 if img is None:
-    raise FileNotFoundError(f"Image not found: {img_path}")
+    raise FileNotFoundError(f"Image not found at path: {img_path}")
 
-haar_cascade = cv.CascadeClassifier(str(cascade_path))
+haar_cascade = cv.CascadeClassifier(cascade_path)
 
 if haar_cascade.empty():
-    raise FileNotFoundError(f"Haar cascade file was not loaded: {cascade_path}")
+    raise FileNotFoundError(f"Haar cascade model failed to load correctly.")
 
 gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 gray = cv.equalizeHist(gray)
@@ -28,8 +46,6 @@ faces = []
 # ===============================
 # 1. MAIN FACE SEARCH AREA
 # ===============================
-
-# Main face is on the lower-left/middle part of the image
 main_x1 = int(width * 0.05)
 main_y1 = int(height * 0.30)
 main_x2 = int(width * 0.75)
@@ -46,18 +62,13 @@ main_faces = haar_cascade.detectMultiScale(
 )
 
 if len(main_faces) > 0:
-    # Pick the biggest face inside the main area
     main_face = max(main_faces, key=lambda face: face[2] * face[3])
-
     x, y, w, h = main_face
     faces.append((x + main_x1, y + main_y1, w, h))
-
 
 # ===============================
 # 2. TIKTOK PROFILE FACE AREA
 # ===============================
-
-# TikTok profile face is on the right side
 profile_x1 = int(width * 0.75)
 profile_y1 = int(height * 0.25)
 profile_x2 = int(width * 0.98)
@@ -74,22 +85,17 @@ profile_faces = haar_cascade.detectMultiScale(
 )
 
 if len(profile_faces) > 0:
-    # Pick the biggest face inside the TikTok profile area
     profile_face = max(profile_faces, key=lambda face: face[2] * face[3])
-
     x, y, w, h = profile_face
     faces.append((x + profile_x1, y + profile_y1, w, h))
-
 
 # ===============================
 # DRAW RESULT
 # ===============================
-
 output = img.copy()
 
 for i, (x, y, w, h) in enumerate(faces, start=1):
     cv.rectangle(output, (x, y), (x + w, y + h), (0, 255, 0), thickness=2)
-
     cv.putText(
         output,
         f'Face {i}',
@@ -101,7 +107,4 @@ for i, (x, y, w, h) in enumerate(faces, start=1):
     )
 
 print(f'Number of real faces found = {len(faces)}')
-
-cv.imshow('Detected Real Faces Only', output)
-cv.waitKey(0)
-cv.destroyAllWindows()
+cv2_imshow(output)
