@@ -1,54 +1,62 @@
-#pylint:disable=no-member
-
 import cv2 as cv
 import numpy as np
+from google.colab.patches import cv2_imshow
 
-img = cv.imread('../Resources/Photos/Woody.jpg')
-cv.imshow('Woody', img)
+# Correcting the file path to the mounted Google Drive directory
+img = cv.imread('/content/drive/MyDrive/IT QM/Resources/Photos/Woody.jpg')
 
-# Translation
-def translate(img, x, y):
-    transMat = np.float32([[1,0,x],[0,1,y]])
-    dimensions = (img.shape[1], img.shape[0])
-    return cv.warpAffine(img, transMat, dimensions)
+if img is None:
+    print("Error: Could not load image. Please verify the file path.")
+else:
+    print("Original Image:")
+    cv2_imshow(img)
 
-# -x --> Left
-# -y --> Up
-# x --> Right
-# y --> Down
+    # Translation
+    def translate(img, x, y):
+        transMat = np.float32([[1,0,x],[0,1,y]])
+        dimensions = (img.shape[1], img.shape[0])
+        return cv.warpAffine(img, transMat, dimensions)
 
-translated = translate(img, -100, 100)
-cv.imshow('Translated', translated)
+    # -x --> Left
+    # -y --> Up
+    # x --> Right
+    # y --> Down
 
-# Rotation
-def rotate(img, angle, rotPoint=None):
-    (height,width) = img.shape[:2]
+    translated = translate(img, -100, 100)
+    print("Translated Image:")
+    cv2_imshow(translated)
 
-    if rotPoint is None:
-        rotPoint = (width//2,height//2)
-    
-    rotMat = cv.getRotationMatrix2D(rotPoint, angle, 1.0)
-    dimensions = (width,height)
+    # Rotation
+    def rotate(img, angle, rotPoint=None):
+        (height,width) = img.shape[:2]
 
-    return cv.warpAffine(img, rotMat, dimensions)
+        if rotPoint is None:
+            rotPoint = (width//2,height//2)
 
-rotated = rotate(img, -45)
-cv.imshow('Rotated', rotated)
+        rotMat = cv.getRotationMatrix2D(rotPoint, angle, 1.0)
+        dimensions = (width,height)
 
-rotated_rotated = rotate(img, -90)
-cv.imshow('Rotated Rotated', rotated_rotated)
+        return cv.warpAffine(img, rotMat, dimensions)
 
-# Resizing
-resized = cv.resize(img, (500,500), interpolation=cv.INTER_CUBIC)
-cv.imshow('Resized', resized)
+    rotated = rotate(img, -45)
+    print("Rotated Image (-45 deg):")
+    cv2_imshow(rotated)
 
-# Flipping
-flip = cv.flip(img, -1)
-cv.imshow('Flip', flip)
+    rotated_rotated = rotate(img, -90)
+    print("Rotated Image (-90 deg):")
+    cv2_imshow(rotated_rotated)
 
-# Cropping
-cropped = img[200:400, 300:400]
-cv.imshow('Cropped', cropped)
+    # Resizing
+    resized = cv.resize(img, (500,500), interpolation=cv.INTER_CUBIC)
+    print("Resized Image:")
+    cv2_imshow(resized)
 
+    # Flipping
+    flip = cv.flip(img, -1)
+    print("Flipped Image:")
+    cv2_imshow(flip)
 
-cv.waitKey(0)
+    # Cropping
+    cropped = img[200:400, 300:400]
+    print("Cropped Image:")
+    cv2_imshow(cropped)
