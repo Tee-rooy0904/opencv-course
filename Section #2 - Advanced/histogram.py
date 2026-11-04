@@ -3,43 +3,49 @@
 import cv2 as cv
 import matplotlib.pyplot as plt
 import numpy as np
+from google.colab.patches import cv2_imshow
 
-img = cv.imread('../Resources/Photos/Woody.jpg')
-cv.imshow('Woody', img)
+# Using the absolute path to your Google Drive image
+img_path = '/content/drive/MyDrive/IT QM/Resources/Photos/Woody.jpg'
+img = cv.imread(img_path)
 
-blank = np.zeros(img.shape[:2], dtype='uint8')
+if img is None:
+    print(f"Error: Could not load image from '{img_path}'. Please check the path.")
+else:
+    print("Original Image:")
+    cv2_imshow(img)
 
-# gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-# cv.imshow('Gray', gray)
+    blank = np.zeros(img.shape[:2], dtype='uint8')
 
-mask = cv.circle(blank, (img.shape[1]//2,img.shape[0]//2), 100, 255, -1)
+    # gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    # cv2_imshow(gray)
 
-masked = cv.bitwise_and(img,img,mask=mask)
-cv.imshow('Mask', masked)
+    mask = cv.circle(blank, (img.shape[1]//2,img.shape[0]//2), 100, 255, -1)
 
-# GRayscale histogram
-# gray_hist = cv.calcHist([gray], [0], mask, [256], [0,256] )
+    masked = cv.bitwise_and(img,img,mask=mask)
+    print("Masked Image:")
+    cv2_imshow(masked)
 
-# plt.figure()
-# plt.title('Grayscale Histogram')
-# plt.xlabel('Bins')
-# plt.ylabel('# of pixels')
-# plt.plot(gray_hist)
-# plt.xlim([0,256])
-# plt.show()
+    # Grayscale histogram
+    # gray_hist = cv.calcHist([gray], [0], mask, [256], [0,256] )
 
-# Colour Histogram
+    # plt.figure()
+    # plt.title('Grayscale Histogram')
+    # plt.xlabel('Bins')
+    # plt.ylabel('# of pixels')
+    # plt.plot(gray_hist)
+    # plt.xlim([0,256])
+    # plt.show()
 
-plt.figure()
-plt.title('Colour Histogram')
-plt.xlabel('Bins')
-plt.ylabel('# of pixels')
-colors = ('b', 'g', 'r')
-for i,col in enumerate(colors):
-    hist = cv.calcHist([img], [i], mask, [256], [0,256])
-    plt.plot(hist, color=col)
-    plt.xlim([0,256])
+    # Colour Histogram
+    plt.figure()
+    plt.title('Colour Histogram')
+    plt.xlabel('Bins')
+    plt.ylabel('# of pixels')
+    colors = ('b', 'g', 'r')
+    for i,col in enumerate(colors):
+        hist = cv.calcHist([img], [i], mask, [256], [0,256])
+        plt.plot(hist, color=col)
+        plt.xlim([0,256])
 
-plt.show()
-
-cv.waitKey(0)
+    plt.show()
