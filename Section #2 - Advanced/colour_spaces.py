@@ -1,32 +1,39 @@
 #pylint:disable=no-member
 
 import cv2 as cv
-import matplotlib.pyplot as plt
+from google.colab.patches import cv2_imshow
 
-img = cv.imread('../Resources/Photos/Woody.jpg')
-cv.imshow('Woody', img)
+# Correcting path to mounted Google Drive folder
+img_path = '/content/drive/MyDrive/IT QM/Resources/Photos/Woody.jpg'
+img = cv.imread(img_path)
 
-# plt.imshow(img)
-# plt.show()
+if img is None:
+    print(f"Error: Could not load image from '{img_path}'. Please check the path.")
+else:
+    print("Original Image:")
+    cv2_imshow(img)
 
-# BGR to Grayscale
-gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-cv.imshow('Gray', gray)
+    # BGR to Grayscale
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    print("Gray Image:")
+    cv2_imshow(gray)
 
-# BGR to HSV
-hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
-cv.imshow('HSV', hsv)
+    # BGR to HSV
+    hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+    print("HSV Image:")
+    cv2_imshow(hsv)
 
-# BGR to L*a*b
-lab = cv.cvtColor(img, cv.COLOR_BGR2LAB)
-cv.imshow('LAB', lab)
+    # BGR to L*a*b
+    lab = cv.cvtColor(img, cv.COLOR_BGR2LAB)
+    print("LAB Image:")
+    cv2_imshow(lab)
 
-# BGR to RGB
-rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
-cv.imshow('RGB', rgb)
+    # BGR to RGB
+    rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+    print("RGB Image:")
+    cv2_imshow(rgb)
 
-# HSV to BGR
-lab_bgr = cv.cvtColor(lab, cv.COLOR_LAB2BGR)
-cv.imshow('LAB --> BGR', lab_bgr)
-
-cv.waitKey(0)
+    # L*a*b to BGR
+    lab_bgr = cv.cvtColor(lab, cv.COLOR_LAB2BGR)
+    print("LAB --> BGR Image:")
+    cv2_imshow(lab_bgr)
