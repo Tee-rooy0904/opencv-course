@@ -1,20 +1,18 @@
 # pylint:disable=no-member
 
-from pathlib import Path
 import cv2 as cv
+from google.colab.patches import cv2_imshow
 
-BASE_DIR = Path(__file__).resolve().parent
-PROJECT_DIR = BASE_DIR.parent
+# Absolute paths inside mounted Google Drive
+cascade_path = '/content/drive/MyDrive/IT QM/Section #3 - Faces/haar_face.xml'
+img_path = '/content/drive/MyDrive/IT QM/Resources/Photos/Woody.jpg'
 
-cascade_path = BASE_DIR / 'haar_face.xml'
-img_path = PROJECT_DIR / 'Resources' / 'Photos' / 'Woody.jpg'
-
-img = cv.imread(str(img_path))
+img = cv.imread(img_path)
 
 if img is None:
     raise FileNotFoundError(f"Image was not loaded. Check this path: {img_path}")
 
-haar_cascade = cv.CascadeClassifier(str(cascade_path))
+haar_cascade = cv.CascadeClassifier(cascade_path)
 
 if haar_cascade.empty():
     raise FileNotFoundError(f"Haar cascade was not loaded: {cascade_path}")
@@ -107,6 +105,5 @@ for (x, y, w, h) in faces_rect:
         thickness=2
     )
 
-cv.imshow("Detected Face", img)
-cv.waitKey(0)
-cv.destroyAllWindows()
+# Using Colab's native image rendering system
+cv2_imshow(img)
