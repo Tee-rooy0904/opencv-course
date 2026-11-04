@@ -1,24 +1,34 @@
 #pylint:disable=no-member
 
 import cv2 as cv
+from google.colab.patches import cv2_imshow
 
-img = cv.imread('../Resources/Photos/Woody.jpg')
-cv.imshow('Cats', img)
+# Correct path pointing to your Google Drive location
+img_path = '/content/drive/MyDrive/IT QM/Resources/Photos/Woody.jpg'
+img = cv.imread(img_path)
 
-# Averaging
-average = cv.blur(img, (3,3))
-cv.imshow('Average Blur', average)
+if img is None:
+    print(f"Error: Could not load image from '{img_path}'. Please verify the path.")
+else:
+    print("Original image:")
+    cv2_imshow(img)
 
-# Gaussian Blur
-gauss = cv.GaussianBlur(img, (3,3), 0)
-cv.imshow('Gaussian Blur', gauss)
+    # Averaging
+    average = cv.blur(img, (3,3))
+    print("Average Blur:")
+    cv2_imshow(average)
 
-# Median Blur
-median = cv.medianBlur(img, 3)
-cv.imshow('Median Blur', median)
+    # Gaussian Blur
+    gauss = cv.GaussianBlur(img, (3,3), 0)
+    print("Gaussian Blur:")
+    cv2_imshow(gauss)
 
-# Bilateral
-bilateral = cv.bilateralFilter(img, 10, 35, 25)
-cv.imshow('Bilateral', bilateral)
+    # Median Blur
+    median = cv.medianBlur(img, 3)
+    print("Median Blur:")
+    cv2_imshow(median)
 
-cv.waitKey(0)
+    # Bilateral Filter
+    bilateral = cv.bilateralFilter(img, 10, 35, 25)
+    print("Bilateral Filter:")
+    cv2_imshow(bilateral)
