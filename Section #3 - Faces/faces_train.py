@@ -3,14 +3,14 @@
 import os
 import cv2 as cv
 import numpy as np
-
+from google.colab.patches import cv2_imshow
 
 # ---------------------------------------------------------
 # SETTINGS
 # ---------------------------------------------------------
 
 SHOW_PREVIEW = True
-PREVIEW_DELAY = 500
+# In Colab, we display static inline previews instead of high-frequency waitKey updates
 
 # All saved face samples will use this size.
 FACE_SIZE = (200, 200)
@@ -22,22 +22,17 @@ CARTOON_PEOPLE = {
 
 
 # ---------------------------------------------------------
-# PATHS
+# PATHS (Updated for Google Colab/Google Drive absolute paths)
 # ---------------------------------------------------------
 
-BASE_DIR = os.path.dirname(
-    os.path.abspath(__file__)
-)
+# Using the absolute path where your faces files are stored
+BASE_DIR = '/content/drive/MyDrive/IT QM/Section #3 - Faces'
 
-TRAIN_DIR = os.path.abspath(
-    os.path.join(
-        BASE_DIR,
-        '..',
-        'Resources',
-        'Faces',
-        'train'
-    )
-)
+# Fallback to Section 2 folder if Section 3 doesn't exist
+if not os.path.exists(BASE_DIR):
+    BASE_DIR = '/content/drive/MyDrive/IT QM/Section #2 - Faces'
+
+TRAIN_DIR = '/content/drive/MyDrive/IT QM/Resources/Faces/train'
 
 HAAR_PATH = os.path.join(
     BASE_DIR,
@@ -58,8 +53,8 @@ labels = []
 
 def resize_for_preview(
     image,
-    max_width=900,
-    max_height=650
+    max_width=500,
+    max_height=400
 ):
     """Resize large images so they fit on the screen."""
 
@@ -292,7 +287,7 @@ def show_preview(
     rectangle,
     method
 ):
-    """Display the selected training area."""
+    """Display the selected training area in Google Colab."""
 
     preview = image.copy()
 
@@ -306,7 +301,7 @@ def show_preview(
         thickness=2
     )
 
-    cv.putText(
+    cv.putText( 
         preview,
         f'{person} - {method}',
         (x1, max(y1 - 10, 25)),
@@ -320,14 +315,8 @@ def show_preview(
         preview
     )
 
-    cv.imshow(
-        'Automatic Face Training - Press Q to close preview',
-        preview
-    )
-
-    return cv.waitKey(
-        PREVIEW_DELAY
-    ) & 0xFF
+    # Use the Colab-native inline viewer patch
+    cv2_imshow(preview)
 
 
 # ---------------------------------------------------------
@@ -489,20 +478,14 @@ def create_train(people):
             )
 
             if SHOW_PREVIEW:
-                key = show_preview(
+                show_preview(
                     image_array,
                     person,
                     selected_rectangle,
                     detection_method
                 )
 
-                if key == ord('q'):
-                    SHOW_PREVIEW = False
-                    cv.destroyAllWindows()
-
         print(f'Finished: {person}\n')
-
-    cv.destroyAllWindows()
 
     print('Scanning summary:')
     print(f'  Person folders: {len(people)}')
@@ -619,9 +602,6 @@ def train_and_save():
 if __name__ == '__main__':
     try:
         train_and_save()
-
     except Exception as error:
-        cv.destroyAllWindows()
-
         print('\nAn error occurred:')
         print(error)
